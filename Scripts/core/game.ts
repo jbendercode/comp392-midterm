@@ -50,10 +50,13 @@ var game = (() => {
     var spotLight: SpotLight;
     var ambientLight: AmbientLight;
     var plane: Mesh;
-    var cubes: Mesh[];
+    var towerObjects: Mesh[];
     var cubeGeometry: CubeGeometry;
     var cubeMaterial: LambertMaterial;
     var axes: AxisHelper;
+    var sphereMaterial: LambertMaterial;
+    var sphereGeometry: SphereGeometry;
+    var sphere: Mesh;
 
     function init() {
         // Instantiate a new Scene object
@@ -63,7 +66,7 @@ var game = (() => {
 	
         setupCamera(); // setup the camera
 
-        cubes = []; // Initialize the array to hold the cubes
+        towerObjects = []; // Initialize the array to hold the towerObjects
         
         // add an axis helper to the scene
         axes = new AxisHelper(15);
@@ -73,7 +76,7 @@ var game = (() => {
         //Add a Plane to the Scene
         plane = new gameObject(
             new PlaneGeometry(24, 24, 1, 1),
-            new LambertMaterial({ color: 0xBBBBBB }),
+            new LambertMaterial({ map: ImageUtils.loadTexture("../../Assets/darkStoneTexture.jpg") }),
             0, 0, 0);
             plane.castShadow = true;
             plane.receiveShadow = true;
@@ -95,15 +98,30 @@ var game = (() => {
         
         //Add Cubes to the tower
         for (var i = 0; i < 5; i++){
-            cubes[i] = new Mesh(cubeGeometry, cubeMaterial);
-            cubes[i].castShadow = true;
-            cubes[i].receiveShadow = true;
-            cubes[i].position.x = 0;
-            cubes[i].position.y = 1 + i * 2;
-            cubes[i].position.z = 0;
-            tower.add(cubes[i]);
+            towerObjects[i] = new Mesh(cubeGeometry, cubeMaterial);
+            towerObjects[i].castShadow = true;
+            towerObjects[i].receiveShadow = true;
+            towerObjects[i].position.x = 0;
+            towerObjects[i].position.y = 1 + i * 2;
+            towerObjects[i].position.z = 0;
+            tower.add(towerObjects[i]);
             cubeGeometry = new CubeGeometry(3 - (1 + i) * 0.3, 2, 3 - (1 + i) * 0.3);
         }
+        
+        // Set Mat and Geo for sphere
+        sphereMaterial = new LambertMaterial({ map: ImageUtils.loadTexture("../../Assets/metalTexture.jpg") });
+        sphereGeometry = new SphereGeometry(0.5);
+        
+        
+        // Add a sphere to the top of the tower
+        sphere = new Mesh(sphereGeometry, sphereMaterial);
+        sphere.castShadow = false;
+        sphere.receiveShadow = true;
+        sphere.position.x = 0;
+        sphere.position.y = 10.5;
+        sphere.position.z = 0;
+        towerObjects[5] = sphere;
+        tower.add(sphere);
         
         // Add an AmbientLight to the scene
         ambientLight = new AmbientLight(0x949494);
@@ -123,20 +141,27 @@ var game = (() => {
         
         // add controls
         gui = new GUI();
-        control = new Control();
+        control = new Control(0, 0, 0, 0, 0, 1);
         addControl(control);
 
         // Add framerate stats
         addStatsObject();
         console.log("Added Stats to scene...");
 
+        window.addEventListener('resize', onResize, false);
+        
         document.body.appendChild(renderer.domElement);
         gameLoop(); // render the scene	
 
     }
 
     function addControl(controlObject: Control): void {
-        /* ENTER CODE for the GUI CONTROL HERE */
+        gui.add(controlObject, 'cube1Speed', -0.2, 0.2);
+        gui.add(controlObject, 'cube2Speed', -0.2, 0.2);
+        gui.add(controlObject, 'cube3Speed', -0.2, 0.2);
+        gui.add(controlObject, 'cube4Speed', -0.2, 0.2);
+        gui.add(controlObject, 'cube5Speed', -0.2, 0.2);
+        gui.add(controlObject, 'towerScale', 0, 1);
     }
 
     function addStatsObject() {
@@ -151,6 +176,20 @@ var game = (() => {
     // Setup main game loop
     function gameLoop(): void {
         stats.update();
+        
+        // rotate tower Cubes
+        towerObjects[0].rotation.y += control.cube5Speed;
+        towerObjects[1].rotation.y += control.cube4Speed;
+        towerObjects[2].rotation.y += control.cube3Speed;
+        towerObjects[3].rotation.y += control.cube2Speed;
+        towerObjects[4].rotation.y += control.cube1Speed;
+        
+        // Scale Tower
+        for (var m in towerObjects){
+            towerObjects[m].scale.x = control.towerScale;
+            towerObjects[m].scale.y = control.towerScale;
+            towerObjects[m].scale.z = control.towerScale;
+        }
         
         // render using requestAnimationFrame
         requestAnimationFrame(gameLoop);
@@ -179,6 +218,14 @@ var game = (() => {
         camera.lookAt(new Vector3(0, 0, 0));
         console.log("Finished setting up Camera...");
     }
+    
+    // Resize function
+    function onResize(): void {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
 
     window.onload = init;
 
