@@ -1,13 +1,13 @@
 {
   "name": "comp392-midterm",
   "authors": [
-    "Tom Tsiliopoulos <tsiliopoulos@hotmail.com>"
+    "Josh Bender <jbendercode@gmail.com>"
   ],
   "description": "COMP392-MidTerm for Advanced Graphics",
   "main": "",
   "moduleType": [],
   "license": "MIT",
-  "homepage": "https://github.com/CentennialCollege/COMP392-MidTerm",
+  "homepage": "https://github.com/jbendercode/comp392-midterm",
   "ignore": [
     "**/.*",
     "node_modules",

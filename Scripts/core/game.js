@@ -1,4 +1,7 @@
 /// <reference path="_reference.ts"/>
+// Josh Bender - 300746563
+// Last Updated 02/03/2016
+// Comp392 MidTerm
 // MAIN GAME FILE
 // THREEJS Aliases
 var Scene = THREE.Scene;
@@ -25,6 +28,7 @@ var Vector3 = THREE.Vector3;
 var Face3 = THREE.Face3;
 var Point = objects.Point;
 var CScreen = config.Screen;
+var ImageUtils = THREE.ImageUtils;
 //Custom Game Objects
 var gameObject = objects.gameObject;
 // setup an IIFE structure (Immediately Invoked Function Expression)
@@ -36,12 +40,64 @@ var game = (function () {
     var control;
     var gui;
     var stats;
+    var tower;
+    var spotLight;
+    var ambientLight;
+    var plane;
+    var cubes;
+    var cubeGeometry;
+    var cubeMaterial;
+    var axes;
     function init() {
         // Instantiate a new Scene object
         //scene = new Scene();
         setupRenderer(); // setup the default renderer
         setupCamera(); // setup the camera
-        /* ENTER CODE HERE */
+        cubes = []; // Initialize the array to hold the cubes
+        // add an axis helper to the scene
+        axes = new AxisHelper(15);
+        scene.add(axes);
+        console.log("Added Axis Helper to scene...");
+        //Add a Plane to the Scene
+        plane = new gameObject(new PlaneGeometry(24, 24, 1, 1), new LambertMaterial({ color: 0xBBBBBB }), 0, 0, 0);
+        plane.castShadow = true;
+        plane.receiveShadow = true;
+        plane.rotation.x = -0.5 * Math.PI;
+        scene.add(plane);
+        console.log("Added Plane Primitive to scene...");
+        // Start with creating an empty group for tower
+        tower = new Object3D();
+        tower.position.set(0, 0, 0);
+        scene.add(tower);
+        console.log("Added tower to scene...");
+        // Set Mat and Geometry to use for cubes
+        cubeMaterial = new LambertMaterial({ map: ImageUtils.loadTexture("../../Assets/towerTexture.jpg") });
+        cubeGeometry = new CubeGeometry(3, 2, 3);
+        //Add Cubes to the tower
+        for (var i = 0; i < 5; i++) {
+            cubes[i] = new Mesh(cubeGeometry, cubeMaterial);
+            cubes[i].castShadow = true;
+            cubes[i].receiveShadow = true;
+            cubes[i].position.x = 0;
+            cubes[i].position.y = 1 + i * 2;
+            cubes[i].position.z = 0;
+            tower.add(cubes[i]);
+            cubeGeometry = new CubeGeometry(3 - (1 + i) * 0.3, 2, 3 - (1 + i) * 0.3);
+        }
+        // Add an AmbientLight to the scene
+        ambientLight = new AmbientLight(0x949494);
+        scene.add(ambientLight);
+        console.log("Added an Ambient Light to Scene");
+        // Add a SpotLight to the scene
+        spotLight = new SpotLight(0xFFFFFF);
+        spotLight.position.set(5.6, 23, 10.4);
+        spotLight.rotation.set(-0.8, 42.7, 19.5);
+        spotLight.castShadow = true;
+        spotLight.shadowCameraFar = 1000;
+        spotLight.shadowCameraNear = 0.1;
+        spotLight.intensity = 2;
+        scene.add(spotLight);
+        console.log("Added a SpotLight Light to Scene");
         // add controls
         gui = new GUI();
         control = new Control();
@@ -74,7 +130,7 @@ var game = (function () {
     // Setup default renderer
     function setupRenderer() {
         renderer = new Renderer();
-        renderer.setClearColor(0x404040, 1.0);
+        renderer.setClearColor(0x333333, 1.0);
         renderer.setSize(CScreen.WIDTH, CScreen.HEIGHT);
         //renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.shadowMap.enabled = true;

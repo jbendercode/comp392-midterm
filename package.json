@@ -4,6 +4,7 @@
   "description": "COMP392-MidTerm for Centennial College",
   "main": "game.js",
   "dependencies": {
+    "gulp": "^3.9.1",
     "typescript": "^1.7.5"
   },
   "devDependencies": {
@@ -18,12 +19,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CentennialCollege/COMP392-MidTerm.git"
+    "url": "git+https://github.com/jbendercode/comp392-midterm.git"
   },
-  "author": "Tom Tsiliopoulos",
+  "author": "Josh Bender",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/CentennialCollege/COMP392-MidTerm/issues"
+    "url": "https://github.com/jbendercode/comp392-midterm/issues"
   },
-  "homepage": "https://github.com/CentennialCollege/COMP392-MidTerm#readme"
+  "homepage": "https://github.com/jbendercode/comp392-midterm#readme"
 }
