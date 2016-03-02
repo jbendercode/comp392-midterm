@@ -1,0 +1,24 @@
+{
+  "name": "comp392-midterm",
+  "authors": [
+    "Tom Tsiliopoulos <tsiliopoulos@hotmail.com>"
+  ],
+  "description": "COMP392-MidTerm for Advanced Graphics",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "https://github.com/CentennialCollege/COMP392-MidTerm",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "Scripts/lib"
+  ],
+  "dependencies": {
+    "three.js": "threejs#*",
+    "dat-gui": "~0.5.1",
+    "stats.js": "*"
+  }
+}
